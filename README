@@ -1,0 +1,57 @@
+This is a mirror of http://www.vim.org/scripts/script.php?script_id=1892
+
+This utility script is useful where you have a long list of similar, one-line case statements, and you'd like to format these statements in tabular form.
+
+The script main function is :[range]call CimpTabulateCase(...) and it takes one optional argument. 
+
+CimpTabulateCase() has three modes of tabulation: 
+  * tabulation -- each sub-statement following the "case :" is aligned to a column
+  * compact -- only the statement immediately following the "case :" is aligned to a column
+  * smart tabulation -- as with tabulation, but tries to reduce the number of columns or apply compact for lines which overflow &textwidth
+
+CimpTabulateCase() interprets arguments as follows:
+  * 1 or "^s" -- use smart tabulation
+  * 2 or "^c" -- use compact tabulation
+  * all other non-empty arguments -- use normal tabulation
+
+If CimpTabulateCase() it is used without arguments, and on the same range as it was previously used, it will cycle through the three modes of tabulation. Otherwise, it will use normal tabulation.
+
+cimp.vim defines four mappings for CimpTabulateCase():
+
+  :map <Leader>cc :call CimpTabulateCase()<CR>
+  :map <Leader>c0 :call CimpTabulateCase(0)<CR>
+  :map <Leader>c1 :call CimpTabulateCase(1)<CR>
+  :map <Leader>c2 :call CimpTabulateCase(2)<CR>
+
+cimp.vim also defines the following settings:
+
+  g:CimpPadding -- column padding, default = 1
+  g:CimpAlignSpecial -- align statements at the end of each line matching g:CimpAlignSpecialPattern in the last column, default = 1
+  g:CimpAlignSpecialPattern -- pattern for special alignment, default = "\^return\\|\^break"
+
+CimpTabulateCase() is probably best demonstrated using the following example: 
+
+1. Add the following case statements to any buffer:
+    case kOneArg:         printf("Number: %d\n", argc); break;
+    case kTwoArgs:        printf("Number: %d\n", argc); break;
+    case kFourArgs:       printf("Number: %d\n", argc); a = b + c; break;
+    case kFifteenArgs:    printf("Number of args: %d\n"); a = b; break;
+    case TwentyThreeArgs: printf("Number of args are way too many: %d\n"); break;
+
+2. :se tw=80
+
+3. At the first case statement, try the following normal commands: 
+
+  5\c0 -- normal tabulation
+  5\c1 -- smart tabulation
+  5\c2 -- compact tabulation
+  5\cc -- cycle to normal tabulation
+
+Of course you can also select a range using visual mode, and then
+
+  \c0
+  gv\c1
+  gv\c2
+  gv\cc
+
+Improvement suggestions and bug submissions are welcome.
